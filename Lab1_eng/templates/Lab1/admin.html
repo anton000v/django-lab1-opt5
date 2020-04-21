@@ -1,0 +1,53 @@
+{% extends 'Lab1/tbase.html' %}
+{% load static %}
+{% block title %}
+    Shop
+{% endblock %}
+
+{% block nav_links %}
+
+  {% if user.is_authenticated %}
+    {% if user.is_superuser %}
+    <li class="nav-item">
+      <a class="nav-link text-success" href="{% url 'my-messages' %}">Сообщения</a>
+    </li>
+      <li class="nav-item">
+        <a class="nav-link text-danger" href="{% url 'logout'%}?next={{request.path}}">Выйти</a>
+      </li>
+      {% endif %}
+  {% endif %}
+
+{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    {% if user.is_superuser %}
+      <p>Здравствуйте, админ.</p>
+      <p>Вот такая статистика:</p>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Кто</th>
+            <th scope="col">Кому</th>
+            <th scope="col">Сколько раз</th>
+          </tr>
+        </thead>
+        {% for author, sent_m in statistics.items %}
+          {% for recipient, times in sent_m.items %}
+
+            <tr>
+              <!-- <th scope="row">1</th> -->
+              <td>{{ author }}</td>
+              <td>{{ recipient }}</td>
+              <td>{{ times }}</td>
+            </tr>
+          {% endfor %}
+        {% endfor %}
+      </table>
+    {% else %}
+      <p>Вы не должны тут находиться!</p>
+    {% endif %}
+  {% else %}
+    <p>Вы не должны тут находиться!</p>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'Lab1/tbase.html' %}
+{% load static %}
+{% block title %}
+    Shop
+{% endblock %}
+
+{% block nav_links %}
+
+  {% if user.is_authenticated %}
+    {% if user.is_superuser %}
+      <li class="nav-item">
+        <a class="nav-link text-success" href="{% url 'admin-page' %}">Админка</a>
+      </li>
+    {% endif %}
+    <li class="nav-item">
+      <a class="nav-link text-danger" href="{% url 'logout'%}?next={{request.path}}">Выйти</a>
+    </li>
+  {% else %}
+    <li class="nav-item">
+        <a class="nav-link text-success" href="{% url 'login'%}?next={{request.path}}">Войти</a>
+    </li>
+  {% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+  <div class="accordion" id="accordionExample">
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Полученные сообщения
+          </button>
+        </h5>
+      </div>
+
+      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+        <div class="card-body">
+          {% if get_messages %}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">От кого</th>
+                  <th scope="col">Текст сообщения</th>
+                  <th scope="col">Время</th>
+                </tr>
+              </thead>
+              {% for get_message in get_messages %}
+              <tr>
+                <!-- <th scope="row">1</th> -->
+                <td>{{ get_message.recipient }}</td>
+                <td>{{ get_message.text }}</td>
+                <td>{{ get_message.pub_date }}</td>
+              </tr>
+              {% endfor %}
+            </table>
+          {% else %}
+            <p>Пока нет полученных сообщений</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header" id="headingTwo">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            Отправленные сообщения
+          </button>
+        </h5>
+      </div>
+      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+        <div class="card-body">
+          <!-- <p>Отправленные сообщения:</p> -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Кому</th>
+                <th scope="col">Текст сообщения</th>
+                <th scope="col">Время</th>
+              </tr>
+            </thead>
+            {% for send_message in send_messages %}
+            <tr>
+              <!-- <th scope="row">1</th> -->
+              <td>{{ send_message.recipient }}</td>
+              <td>{{ send_message.text }}</td>
+              <td>{{ send_message.pub_date }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+
+{% endblock %}
